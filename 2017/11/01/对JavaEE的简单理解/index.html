@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.3.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.3.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.3.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="本文是在学习软件工程与J2EE课程时的学习笔记，旨在从大体的概念上了解Java EE的一些主要组件在Web应用中的作用。">
+<meta name="keywords" content="JavaEE">
+<meta property="og:type" content="article">
+<meta property="og:title" content="对JavaEE的简单理解">
+<meta property="og:url" content="https://zillyrex.github.io/2017/11/01/对JavaEE的简单理解/index.html">
+<meta property="og:site_name" content="MOTTO">
+<meta property="og:description" content="本文是在学习软件工程与J2EE课程时的学习笔记，旨在从大体的概念上了解Java EE的一些主要组件在Web应用中的作用。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://netbeans.org/images_www/articles/73/javaee/ecommerce/design/mvc-diagram.png">
+<meta property="og:updated_time" content="2017-12-08T15:39:37.375Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="对JavaEE的简单理解">
+<meta name="twitter:description" content="本文是在学习软件工程与J2EE课程时的学习笔记，旨在从大体的概念上了解Java EE的一些主要组件在Web应用中的作用。">
+<meta name="twitter:image" content="https://netbeans.org/images_www/articles/73/javaee/ecommerce/design/mvc-diagram.png">
+
+
+
+
+
+
+  <link rel="canonical" href="https://zillyrex.github.io/2017/11/01/对JavaEE的简单理解/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>对JavaEE的简单理解 | MOTTO</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">MOTTO</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">Zilly Rex</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://zillyrex.github.io/2017/11/01/对JavaEE的简单理解/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zilly Rex">
+      <meta itemprop="description" content="..-. --- .-. -- -.-- .-.. --- ...- .">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MOTTO">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">对JavaEE的简单理解
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2017-11-01 14:11:13" itemprop="dateCreated datePublished" datetime="2017-11-01T14:11:13+08:00">2017-11-01</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2017-12-08 23:39:37" itemprop="dateModified" datetime="2017-12-08T23:39:37+08:00">2017-12-08</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文是在学习软件工程与J2EE课程时的学习笔记，旨在从大体的概念上了解Java EE的一些主要组件在Web应用中的作用。</p>
+<p><img src="https://netbeans.org/images_www/articles/73/javaee/ecommerce/design/mvc-diagram.png" alt=""></p>
+<a id="more"></a>
+<p>上图精炼的描述了MVC模型以及Java EE的部分组件如何分布在一个Web应用上，下文所提到的图示均指该图。</p>
+<h1 id="Java-EE"><a href="#Java-EE" class="headerlink" title="Java EE"></a>Java EE</h1><h2 id="Web应用"><a href="#Web应用" class="headerlink" title="Web应用"></a>Web应用</h2><p>  在开始一切之前要了解什么是Web应用，对于图中最左侧的用户来说，Web应用就是浏览器上的一组网页，这组网页可以根据自己的操作，包括点击、输入等，来动态地展示信息。<br>  这里的动态意味着，用户的操作被提交到了后台的服务器上进行了某种处理，之后服务器返回了一些信息对展示在浏览器上的网页进行了更新，从而达到动态效果，所以说，一个单纯的HTML静态页并不能算是Web应用，哪怕这个页面被CSS与JavaScript加上了一些视觉上的动态效果。<br>  常见的购物网站比如淘宝，就属于Web应用，用户在网站上通过点击操作不断的向后台的服务器提交着数据，然后动态地更新着浏览的商品信息，最后还要键入密码完成剁手。<br>所以对于用户来说，后台的一切就是黑盒，不需要用户做任何关心，只要提交操作，就能得到结果。<br>  下面的任务就是了解Java EE如何使这个黑盒运转起来。</p>
+<h2 id="MVC模型"><a href="#MVC模型" class="headerlink" title="MVC模型"></a>MVC模型</h2><p>  可以试想这样一种情况，用户想买一把吉他，于是在淘宝的搜索框里输入”吉他“，然后点击搜索，期待着页面能够刷新并展示出满是商品的页面供自己挑选，这时请求提交到后台服务器上后，服务器上只运行着一个helloworld.java程序来处理全部这些操作(也就是说黑盒中只有一个.java文件)，这时helloworld.java需要做什么呢，首先要解析提交进来的数据，使用特定的方法分析这些数据的意思，发现是想要请求一个罗列了吉他商品的新页面，于是连接到数据库，请求吉他相关的各种数据，然后使用特定的方法生成一个全新的页面，最后反馈给浏览器，如果用户提交的是另外的请求，则还需要其他特定的方法来处理，用户每进行一次任意的操作，helloworld.java就要把这些操作再重新进行一遍。<br>  可以看到这样的操作十分繁琐，效率极其低下，耦合度非常高，整个过程中无论是用户请求、业务逻辑或是页面结构，只要稍作更改，helloworld.java文件就要重新改写，完全无法维护。<br>  MVC模型可以很好的处理这个问题，与之前的单一java文件相比，MVC把黑盒分成了三个部分：</p>
+<ul>
+<li>Controller：<br>如图所示，用户提交请求后，到达后端的第一站即是Controller，他对原始的HTTP的Get或Post请求进行解析，得到真正的用户数据，然后交给Model来处理，这样Model完全不用关心数据如何解析的问题，也负责把Model返回来的数据封装起来，提交给View，让View去更新用户的页面。</li>
+<li>Model：<br>Model从Controller处拿到纯净的数据，专心地依据业务逻辑来处理这些数据，在必要时与数据库交互，最终把处理完成的数据返回给Controller。</li>
+<li>View：<br>View从Controller处获取更新的数据，用这些数据来动态的更新用户看到的界面。</li>
+</ul>
+<h2 id="JSP"><a href="#JSP" class="headerlink" title="JSP"></a>JSP</h2><p>  MVC中的View可以使用JSP页面来动态地更新用户看到的网页界面，JSP页面可以理解为一个既可以展示常规的HTML页面，同时又能够执行Java代码的页面，如果它不执行Java代码，那效果和普通HTML毫无二致。<br>JSP中可以写入Java代码，用来提取当前页面中HTML的节点，然后根据从Controller中接收到的新信息来更新这些节点，让他们重新显示，这样一来就不必每次都刷新整个页面，只需要更新页面中那些出现变动的部分</p>
+<h2 id="Servlet"><a href="#Servlet" class="headerlink" title="Servlet"></a>Servlet</h2><p>  MVC中的Controller使用servlet来处理信息，servlet其实就是一个.java文件中实现的一个类，比如叫ControllerServlet类，类中主要重写了两个方法，一个是doGet方法，一个是doPost方法，分别用来处理前端提交进来的Get和Post请求，把这些请求中的数据解析出来交给Model来处理，然后把Model返回的结果提交给JSP去更新网页，一般servlet不会对数据做任何逻辑处理。</p>
+<h2 id="EJB"><a href="#EJB" class="headerlink" title="EJB"></a>EJB</h2><p>  在了解EJB前需要首先了解JavaBean，一个JavaBean实际就是一个Java 类，这个类主要实现了一些getter和setter方法，用setter方法接受一些数据，然后处理一番，用getter方法返回，譬如如下代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PersonBean</span> <span class="keyword">implements</span> <span class="title">java</span>.<span class="title">io</span>.<span class="title">Serializable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> String name = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">double</span> score = <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line"><span class="keyword">return</span> name;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(<span class="keyword">final</span> String value)</span> </span>&#123;</span><br><span class="line">name = value;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">getScore</span><span class="params">()</span> </span>&#123;</span><br><span class="line"><span class="keyword">return</span> score;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setScore</span><span class="params">(<span class="keyword">final</span> <span class="keyword">double</span> value)</span> </span>&#123;</span><br><span class="line">score = value;</span><br><span class="line">&#125;&#125;</span><br></pre></td></tr></table></figure>
+<p>  这个PersonBean类即是一个JavaBean，它可以接受姓名和分数，以及返回姓名和分数，当然在setScore方法中可以对score做一些逻辑处理，譬如score=sqrt(score)*10，表示对学生的分数开根号再乘10，等等。<br>  可以像下面这样来使用它</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestPersonBean</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">PersonBean person = <span class="keyword">new</span> PersonBean();</span><br><span class="line"></span><br><span class="line">person.setName(<span class="string">"张三"</span>);</span><br><span class="line">person.setScore(<span class="number">88</span>);</span><br><span class="line"></span><br><span class="line">System.out.print(person.getName());</span><br><span class="line">System.out.println(person.getScore());</span><br><span class="line">&#125;&#125;</span><br></pre></td></tr></table></figure>
+<p>  这种类有着很强的可重用性，使用者拿到一个Bean后就知道可以给它set一些值，然后get到自己想要的值，所以专门起了个JavaBean的名字，Bean在Java中就是可重用组件的一种叫法而已，说到某某Bean时应当意识到这就是一个可重用的Java类而已。<br>  而EJB，即Enterprise JavaBean，顾名思义就是JavaBean的一个扩展，能够实现更复杂的功能。<br>在MVC模型中，EJB处于Model的最前端，接受Controller解析出来的数据，EJB包含三类：会话(Session)Bean，实体(Entity)Bean，消息驱动(Message Driven)Bean。</p>
+<ul>
+<li>Session Bean：<br>Session Bean的Session基本是指Bean与用户的会话，譬如用户要完成挑选商品添加到购物车，然后结算的动作，这时购物车就可以用一个所谓的有状态Session Bean来维持，用以持续关注用户，看是否有新的物品添加进来，或是有什么商品被删除了，购物车中有商品被添加或删除时，这个Session Bean都会运行相关的方法来处理这些动作，当用户挑选完成，在检查过购物车后点击结算，这个有状态Session Bean就被清除了，它已经完成了与用户的会话，而在下一步的结算页面，则可以启用一个无状态Session Bean，无状态意味着用户一般只用提交一次请求，比如输入密码即可，然后账单的相关信息如价格、收货地址、包含物品等等，则一次性提交给这个Session Bean，然后用户就吃饭去了，这个Session Bean也就不用持续关注用户而去处理这些账单信息。</li>
+<li>Entity Bean：<br>Entity Bean其实就是数据库中的某张表中的某一行所对应的一个Bean，用来对数据库间接操作，现在一般用JPA取而代之。</li>
+<li>Message Driven Bean：<br>MDB可以理解为一个消息监听器，消息源来自JMS，应当意识到这里的消息不是指那种长篇大论的信息，而一般是短小的，频繁的短消息，譬如用户点击订阅了某个杂志，这时这个订阅的动作就转成相应的消息交给JMS，MDB监听到这个消息后再进行相关动作。</li>
+</ul>
+<h2 id="JMS"><a href="#JMS" class="headerlink" title="JMS"></a>JMS</h2><p>  想象一个新闻门户网站(这显然是一个Web应用)，它每天发布新闻后，有其他很多新闻网站也想获取这些新闻，譬如一些科技类新闻网站会实时关注各大新闻门户网站的科技板块，所以这些Web应用间需要互相传递消息，而JMS作为一组API扮演了消息传递中间件，解决了应用间通讯的问题，当一个Web应用使用了JMS的时候，可以想象成是这个Web应用在自己家门口放了一个邮箱，自己每天愿意公开的消息，就放在邮箱里，想要的人可以来随意取用，这样一来自己根本不用关心要给谁发消息，那些取用消息的人不需问候就可以直接把消息取走，因为邮箱里的消息都是愿意被公开的，而自己如果想看别人的消息，就去查看对方的邮箱即可，一个应用想要关注其他多个应用的消息，只要订阅这些应用的JMS邮箱即可，这就是JMS的发布/订阅模型。<br>  JMS还有点对点模型，交大校务处的网站和交大图书馆的网站互通信息，而这些信息不想让其他Web应用看到，这时可以使用点对点模型，即只在二者之间维护一个消息队列，图书馆一有新消息，就把它放在这个消息队列中，然后去忙自己的，校务处有空就查看队列，取用队列中的消息，双方都不必等着对方来发送或接收消息，消息的发送与接受是异步的。<br>  之前的MDB就是用来监听JMS消息邮箱或是JMS消息队列的Bean。</p>
+<h2 id="JPA"><a href="#JPA" class="headerlink" title="JPA"></a>JPA</h2><p>  在了解JPA前需要知道什么是实体对象，在EJB处理数据的时候往往需要和数据库交互，比如在教务网站上老师查询一个学生成绩的时候，EJB需要根据学生的姓名学号去查看数据库里相应的表中的这个学生所对应的那一行，然后取到成绩这一列再返回，假如语数外理化史地政生的九个老师都时要修改成绩，EJB又需要再查九遍然后去修改，还有其他的很多情况，EJB可能需要频繁的改动数据库的表中的某一行，如果每次都查显然很麻烦，而所谓实体其实就是把这样一行数据库的数据映射成为一个Java对象，创建出这样一个对象后就可以一直对它操作，直到不用的时候再释放即可，而这样的Java对象就被称为实体对象，所以实体的意思其实就是那一行数据所对应的实体，譬如那个被查成绩的学生，而JPA就是一种规范，详细规定了实体类和数据行到底怎么映射。<br>  如图中所示，Session Bean为了专心地处理数据，一般不和数据库直接联系，而是通过JPA规范下的实体类来取用数据，这样以来Session Bean的业务逻辑就能很好的和更加底层的数据库细节解耦了。</p>
+<h2 id="JDBC连接池与JDBC资源"><a href="#JDBC连接池与JDBC资源" class="headerlink" title="JDBC连接池与JDBC资源"></a>JDBC连接池与JDBC资源</h2><p>  Web应用在更上层的部分，比如JSP部分，有时想要直接与数据库交互而不通过复杂的EJB，设想JSP中的Java代码直接使用JDBC访问了数据库，在初始化JDBC连接的时候需要输入数据库的地址、端口、用户名、密码等等与数据库本身紧密关联的参数，假如有天数据库的参数改变了，譬如更换了地址或是密码，那所有JSP上的代码都得改，而且由于处在前端的JSP变动非常频繁，直接用JDBC连接数据库会造成数据库频繁开关，性能损耗极大，所以这样的调用数据库方式是难以维护的。<br>JDBC连接池就是处于JSP与数据库之间的一个中间件，可以把它想象成一个用来放置JDBC连接的池子，Web应用启动的时候，连接池向数据库请求足量的连接并放在池中以供JSP取用，这样首先解决了JSP与数据库的耦合问题，JSP根本不需要关心数据库的地址、端口、用户名、密码是什么，它取用数据库的数据时只要从连接池里取出一条或多条连接即可，用完之后把连接归还到连接池中以便别的JSP再次取用，当数据库的参数变动的时候，只需要修改连接池的参数即可，前端的JSP不需要做任何改动，此外，连接池中有充足的连接，足够JSP来取用，所以大大降低了数据库的开关次数，提高了性能。<br>JDBC资源则是JSP对JDBC连接池中的连接的具体使用方式，JSP通过引用JDBC资源来使用连接。</p>
+<p>……未完……</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/JavaEE/" rel="tag"># JavaEE</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/12/08/C-中调用FFTW/" rel="prev" title="C++中调用FFTW">
+                C++中调用FFTW <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Zilly Rex</p>
+              <p class="site-description motion-element" itemprop="description">..-. --- .-. -- -.-- .-.. --- ...- .</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">tags</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/ZillyRex" target="_blank" title="Github"><i class="fa fa-fw fa-globe"></i>Github</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.zhihu.com/people/zillyrex" target="_blank" title="Zhihu"><i class="fa fa-fw fa-globe"></i>Zhihu</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Java-EE"><span class="nav-number">1.</span> <span class="nav-text">Java EE</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Web应用"><span class="nav-number">1.1.</span> <span class="nav-text">Web应用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MVC模型"><span class="nav-number">1.2.</span> <span class="nav-text">MVC模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JSP"><span class="nav-number">1.3.</span> <span class="nav-text">JSP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Servlet"><span class="nav-number">1.4.</span> <span class="nav-text">Servlet</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#EJB"><span class="nav-number">1.5.</span> <span class="nav-text">EJB</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JMS"><span class="nav-number">1.6.</span> <span class="nav-text">JMS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JPA"><span class="nav-number">1.7.</span> <span class="nav-text">JPA</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JDBC连接池与JDBC资源"><span class="nav-number">1.8.</span> <span class="nav-text">JDBC连接池与JDBC资源</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zilly Rex</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Muse</a> v6.3.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.3.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.3.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.3.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.3.0"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
