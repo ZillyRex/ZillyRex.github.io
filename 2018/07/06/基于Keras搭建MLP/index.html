@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.3.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.3.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.3.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="Keras是一套基于Tensorflow、Theano及CNTK后端的高层神经网络API，可以非常友好地支持快速实验，本文从零开始介绍了如何使用Keras搭建MLP并给出两个示例。">
+<meta name="keywords" content="Keras">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Keras(1):从零搭建MLP">
+<meta property="og:url" content="https://zillyrex.github.io/2018/07/06/基于Keras搭建MLP/index.html">
+<meta property="og:site_name" content="MOTTO">
+<meta property="og:description" content="Keras是一套基于Tensorflow、Theano及CNTK后端的高层神经网络API，可以非常友好地支持快速实验，本文从零开始介绍了如何使用Keras搭建MLP并给出两个示例。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://s3.amazonaws.com/keras.io/img/keras-logo-2018-large-1200.png">
+<meta property="og:updated_time" content="2018-07-07T13:31:22.694Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Keras(1):从零搭建MLP">
+<meta name="twitter:description" content="Keras是一套基于Tensorflow、Theano及CNTK后端的高层神经网络API，可以非常友好地支持快速实验，本文从零开始介绍了如何使用Keras搭建MLP并给出两个示例。">
+<meta name="twitter:image" content="https://s3.amazonaws.com/keras.io/img/keras-logo-2018-large-1200.png">
+
+
+
+
+
+
+  <link rel="canonical" href="https://zillyrex.github.io/2018/07/06/基于Keras搭建MLP/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Keras(1):从零搭建MLP | MOTTO</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">MOTTO</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">Zilly Rex</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://zillyrex.github.io/2018/07/06/基于Keras搭建MLP/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zilly Rex">
+      <meta itemprop="description" content="..-. --- .-. -- -.-- .-.. --- ...- .">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MOTTO">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Keras(1):从零搭建MLP
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-07-06 21:34:31" itemprop="dateCreated datePublished" datetime="2018-07-06T21:34:31+08:00">2018-07-06</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2018-07-07 21:31:22" itemprop="dateModified" datetime="2018-07-07T21:31:22+08:00">2018-07-07</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Keras是一套基于Tensorflow、Theano及CNTK后端的高层神经网络API，可以非常友好地支持快速实验，本文从零开始介绍了如何使用Keras搭建MLP并给出两个示例。</p>
+<p><img src="https://s3.amazonaws.com/keras.io/img/keras-logo-2018-large-1200.png" alt=""></p>
+<a id="more"></a>
+<h1 id="基于Ubuntu安装Keras"><a href="#基于Ubuntu安装Keras" class="headerlink" title="基于Ubuntu安装Keras"></a>基于Ubuntu安装Keras</h1><p>具体安装过程在官方中英文文档中有详细说明<br>中文 <a href="https://keras-cn.readthedocs.io/en/latest/for_beginners/keras_linux/" target="_blank" rel="noopener">https://keras-cn.readthedocs.io/en/latest/for_beginners/keras_linux/</a><br>英文 <a href="https://keras.io/#installation" target="_blank" rel="noopener">https://keras.io/#installation</a></p>
+<h1 id="Keras基础知识"><a href="#Keras基础知识" class="headerlink" title="Keras基础知识"></a>Keras基础知识</h1><h2 id="Sequential-models"><a href="#Sequential-models" class="headerlink" title="Sequential models"></a>Sequential models</h2><p>可以认为Keras中的所谓模型(models)就是某个具体的网络结构，如MLP、CNN、LSTM等，在Keras中它们被分为两种：序贯模型(Sequential)和函数式模型(Model)。</p>
+<p>Sequential模型就是一个直接由若干网络层线性堆叠起来的网络，使用如下代码创建一个Sequential对象：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> keras.models <span class="keyword">import</span> Sequential</span><br><span class="line"></span><br><span class="line">model = Sequential()</span><br></pre></td></tr></table></figure>
+<p>Sequential的构造函数可以接收一个由layer组成的list，用以初始化该model</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">model = Sequential([</span><br><span class="line">    Dense(<span class="number">32</span>, input_shape=(<span class="number">784</span>,)),<span class="comment">#一个Dense层</span></span><br><span class="line">    Activation(<span class="string">'relu'</span>),<span class="comment">#为上一个Dense层附加激活函数</span></span><br><span class="line">    Dense(<span class="number">10</span>),<span class="comment">#再添加一个Dense层</span></span><br><span class="line">    Activation(<span class="string">'softmax'</span>),<span class="comment">#为上一个Dense层附加激活函数</span></span><br><span class="line">])</span><br></pre></td></tr></table></figure>
+<p>也可以使用.add()方法对该model初始化：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">model.add(Dense(<span class="number">32</span>, input_shape=(<span class="number">784</span>,)))</span><br><span class="line">model.add(Activation(<span class="string">'relu'</span>))</span><br></pre></td></tr></table></figure>
+<h2 id="Dense-layer"><a href="#Dense-layer" class="headerlink" title="Dense layer"></a>Dense layer</h2><p>Dense layer即全连接层，构造方法如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">keras.layers.core.Dense(</span><br><span class="line">  units,</span><br><span class="line">  activation=<span class="keyword">None</span>,</span><br><span class="line">  use_bias=<span class="keyword">True</span>,</span><br><span class="line">  kernel_initializer=<span class="string">'glorot_uniform'</span>,</span><br><span class="line">  bias_initializer=<span class="string">'zeros'</span>,</span><br><span class="line">  kernel_regularizer=<span class="keyword">None</span>,</span><br><span class="line">  bias_regularizer=<span class="keyword">None</span>,</span><br><span class="line">  activity_regularizer=<span class="keyword">None</span>,</span><br><span class="line">  kernel_constraint=<span class="keyword">None</span>,</span><br><span class="line">  bias_constraint=<span class="keyword">None</span>)</span><br></pre></td></tr></table></figure>
+<p>units：大于0的整数，表示该层输出维度。<br>activation：激活函数。<br>use_bias：是否使用偏置。<br>kernel_initializer：权值矩阵初始化方法。<br>bias_initializer：偏置的初始化方法。<br>regularizer与constraint：正则项与约束项。</p>
+<p>我们可以使用前文提到的.add()方法为model添加全连接层，只有输入层需要指定输入数据维度，之后的层不需再指定前一层的维度。</p>
+<h2 id="compile-amp-fit"><a href="#compile-amp-fit" class="headerlink" title="compile &amp; fit"></a>compile &amp; fit</h2><p>model的结构设置好之后使用compile方法编译：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">model.compile(</span><br><span class="line">  self,</span><br><span class="line">  optimizer,</span><br><span class="line">  loss,</span><br><span class="line">  metrics=<span class="keyword">None</span>,</span><br><span class="line">  sample_weight_mode=<span class="keyword">None</span>)</span><br></pre></td></tr></table></figure>
+<p>optimizer：预定义的优化器名称或自定义的优化器对象。<br>loss：预定义的损失函数名称或自定义的目标函数。</p>
+<p>编译后使用fit方法训练模型：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">model.fit(</span><br><span class="line">  self,</span><br><span class="line">  x,</span><br><span class="line">  y,</span><br><span class="line">  batch_size=<span class="number">32</span>,</span><br><span class="line">  epochs=<span class="number">10</span>,</span><br><span class="line">  verbose=<span class="number">1</span>,</span><br><span class="line">  callbacks=<span class="keyword">None</span>,</span><br><span class="line">  validation_split=<span class="number">0.0</span>,</span><br><span class="line">  validation_data=<span class="keyword">None</span>,</span><br><span class="line">  shuffle=<span class="keyword">True</span>,</span><br><span class="line">  class_weight=<span class="keyword">None</span>,</span><br><span class="line">  sample_weight=<span class="keyword">None</span>,</span><br><span class="line">  initial_epoch=<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+<p>x：作为输入数据的numpy array。<br>y：作为标签的numpy array。<br>batch_size：梯度下降时每个batch包含的样本数。<br>epochs：训练总轮数。<br>verbose：日志显示，0为不在标准输出流输出日志信息，1为输出进度条记录，2为每个epoch输出一行记录。</p>
+<h1 id="训练一个线性回归模型"><a href="#训练一个线性回归模型" class="headerlink" title="训练一个线性回归模型"></a>训练一个线性回归模型</h1><p>一个线性回归模型可以被认为是一个MLP的特例，即一个输入与输出只有1维且没有激活函数(或激活函数为线性函数a(x)=x)的MLP，我们首先生成一些离散的点，使这些点大致成线性关系，再构建一个Sequential model，最后在这些点上训练该model以得到它们的线性关系。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> keras.models <span class="keyword">import</span> Sequential</span><br><span class="line"><span class="keyword">from</span> keras.layers <span class="keyword">import</span> Dense</span><br><span class="line"><span class="keyword">from</span> keras <span class="keyword">import</span> optimizers</span><br><span class="line"></span><br><span class="line">data_size = <span class="number">50</span><span class="comment">#生成的数据集大小</span></span><br><span class="line">batch_size = <span class="number">40</span></span><br><span class="line">learning_rate = <span class="number">0.01</span></span><br><span class="line">epochs = <span class="number">300</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#在正负1之间均匀产生data_size个点</span></span><br><span class="line">x_train = np.linspace(<span class="number">-1</span>, <span class="number">1</span>, data_size)</span><br><span class="line"><span class="comment">#使得数据点呈y=3x+5的关系，添加小范围正态随机数以获得数据的随机波动效果</span></span><br><span class="line">y_train = <span class="number">3</span> * x_train + <span class="number">5</span> + np.random.rand(*x_train.shape)*<span class="number">0.3</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#创建一个Sequential模型</span></span><br><span class="line">model = Sequential()</span><br><span class="line"><span class="comment">#添加一个全连接层，输入数据维度为1，含一个输出单元，RandomUniform表示权值在正负0.05间均匀随机初始化</span></span><br><span class="line">model.add(Dense(units=<span class="number">1</span>, input_dim=<span class="number">1</span>, kernel_initializer=<span class="string">'RandomUniform'</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment">#打印查看当前的权重</span></span><br><span class="line">print(model.layers[<span class="number">0</span>].get_weights())</span><br><span class="line"></span><br><span class="line"><span class="comment">#创建一个SGD对象以调整学习速率</span></span><br><span class="line">sgd = optimizers.SGD(lr=learning_rate)</span><br><span class="line"><span class="comment">#编译model，优化器使用刚创建的SGD对象，损失函数使用最小均方差mse</span></span><br><span class="line">model.compile(optimizer=sgd, loss=<span class="string">'mse'</span>)</span><br><span class="line"><span class="comment">#使用之前生成的数据训练</span></span><br><span class="line">history = model.fit(x_train, y_train, batch_size=batch_size, epochs=epochs, verbose=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#再次打印权重，可以看到其值在3与5附近</span></span><br><span class="line">print(model.layers[<span class="number">0</span>].get_weights())</span><br></pre></td></tr></table></figure>
+<p>结果：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">Epoch <span class="number">298</span>/<span class="number">300</span></span><br><span class="line"><span class="number">50</span>/<span class="number">50</span> [==============================] - <span class="number">0</span>s <span class="number">36</span>us/step - loss: <span class="number">0.0325</span></span><br><span class="line">Epoch <span class="number">299</span>/<span class="number">300</span></span><br><span class="line"><span class="number">50</span>/<span class="number">50</span> [==============================] - <span class="number">0</span>s <span class="number">45</span>us/step - loss: <span class="number">0.0264</span></span><br><span class="line">Epoch <span class="number">300</span>/<span class="number">300</span></span><br><span class="line"><span class="number">50</span>/<span class="number">50</span> [==============================] - <span class="number">0</span>s <span class="number">56</span>us/step - loss: <span class="number">0.0260</span></span><br><span class="line">[array([[<span class="number">2.9937706</span>]], dtype=float32), array([<span class="number">5.0084023</span>], dtype=float32)]</span><br></pre></td></tr></table></figure>
+<p>有趣的是，当我们调整数据点的范围，将</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">x_train = np.linspace(<span class="number">-1</span>, <span class="number">1</span>, data_size)</span><br></pre></td></tr></table></figure>
+<p>改为</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">x_train = np.linspace(<span class="number">-25</span>, <span class="number">25</span>, data_size)</span><br></pre></td></tr></table></figure>
+<p>保持其他部分不变,再次运行程序训练，loss会振荡到无穷到导致训练失败，这是学习率过大造成的，将learning_rate由0.01改为0.003，再次训练，即可得到正确结果。</p>
+<p>我们还可以加入一个隐层，调整学习率与epochs后也可以得到很好的训练结果：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> keras.models <span class="keyword">import</span> Sequential</span><br><span class="line"><span class="keyword">from</span> keras.layers <span class="keyword">import</span> Dense</span><br><span class="line"><span class="keyword">from</span> keras <span class="keyword">import</span> optimizers</span><br><span class="line"></span><br><span class="line">data_size = <span class="number">50</span></span><br><span class="line">batch_size = <span class="number">40</span></span><br><span class="line">learning_rate = <span class="number">0.0003</span></span><br><span class="line">epochs = <span class="number">500</span></span><br><span class="line"></span><br><span class="line">x_train = np.linspace(<span class="number">-25</span>, <span class="number">25</span>, data_size)</span><br><span class="line">y_train = <span class="number">3</span> * x_train + <span class="number">5</span> + np.random.rand(*x_train.shape)*<span class="number">0.3</span></span><br><span class="line"></span><br><span class="line">model = Sequential()</span><br><span class="line"><span class="comment">#这里的units为4，即隐层单元个数为4</span></span><br><span class="line">model.add(Dense(units=<span class="number">4</span>, input_dim=<span class="number">1</span>, kernel_initializer=<span class="string">'RandomUniform'</span>))</span><br><span class="line"><span class="comment">#再添加输出层，维度为1</span></span><br><span class="line">model.add(Dense(units=<span class="number">1</span>, kernel_initializer=<span class="string">'RandomUniform'</span>))</span><br><span class="line"></span><br><span class="line">print(model.layers[<span class="number">0</span>].get_weights())</span><br><span class="line">print(model.layers[<span class="number">1</span>].get_weights())</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">sgd = optimizers.SGD(lr=learning_rate)</span><br><span class="line">model.compile(optimizer=sgd, loss=<span class="string">'mse'</span>)</span><br><span class="line">history = model.fit(x_train, y_train, batch_size=batch_size, epochs=epochs, verbose=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">print(model.layers[<span class="number">0</span>].get_weights())</span><br><span class="line">print(model.layers[<span class="number">1</span>].get_weights())</span><br></pre></td></tr></table></figure>
+<p>结果：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Epoch <span class="number">498</span>/<span class="number">500</span></span><br><span class="line"><span class="number">50</span>/<span class="number">50</span> [==============================] - <span class="number">0</span>s <span class="number">119</span>us/step - loss: <span class="number">0.0169</span></span><br><span class="line">Epoch <span class="number">499</span>/<span class="number">500</span></span><br><span class="line"><span class="number">50</span>/<span class="number">50</span> [==============================] - <span class="number">0</span>s <span class="number">156</span>us/step - loss: <span class="number">0.0168</span></span><br><span class="line">Epoch <span class="number">500</span>/<span class="number">500</span></span><br><span class="line"><span class="number">50</span>/<span class="number">50</span> [==============================] - <span class="number">0</span>s <span class="number">85</span>us/step - loss: <span class="number">0.0182</span></span><br><span class="line">[array([[ <span class="number">0.8122992</span> , <span class="number">-0.08030439</span>, <span class="number">-0.05526135</span>, <span class="number">-1.0514123</span> ]],</span><br><span class="line">      dtype=float32), array([ <span class="number">1.110988</span>  , <span class="number">-0.11047827</span>, <span class="number">-0.07585457</span>, <span class="number">-1.4386528</span> ], dtype=float32)]</span><br><span class="line">[array([[ <span class="number">1.3721825</span> ],</span><br><span class="line">       [<span class="number">-0.13642032</span>],</span><br><span class="line">       [<span class="number">-0.09367472</span>],</span><br><span class="line">       [<span class="number">-1.7768502</span> ]], dtype=float32), array([<span class="number">0.968823</span>], dtype=float32)]</span><br></pre></td></tr></table></figure>
+<p>结果中两个list中的第一个array是权值，第二个array是偏置。</p>
+<h1 id="训练一个用于识别MNIST的MLP"><a href="#训练一个用于识别MNIST的MLP" class="headerlink" title="训练一个用于识别MNIST的MLP"></a>训练一个用于识别MNIST的MLP</h1><p>在Keras安装路径下的examples文件夹中可以找到mnist_mlp.py：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> print_function</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> keras</span><br><span class="line"><span class="keyword">from</span> keras.datasets <span class="keyword">import</span> mnist</span><br><span class="line"><span class="keyword">from</span> keras.models <span class="keyword">import</span> Sequential</span><br><span class="line"><span class="keyword">from</span> keras.layers <span class="keyword">import</span> Dense, Dropout</span><br><span class="line"><span class="keyword">from</span> keras.optimizers <span class="keyword">import</span> RMSprop</span><br><span class="line"></span><br><span class="line">batch_size = <span class="number">128</span></span><br><span class="line">num_classes = <span class="number">10</span></span><br><span class="line">epochs = <span class="number">20</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#读取mnist的训练与测试数据</span></span><br><span class="line">(x_train, y_train), (x_test, y_test) = mnist.load_data()</span><br><span class="line"></span><br><span class="line">x_train = x_train.reshape(<span class="number">60000</span>, <span class="number">784</span>)</span><br><span class="line">x_test = x_test.reshape(<span class="number">10000</span>, <span class="number">784</span>)</span><br><span class="line"><span class="comment">#整型转为浮点型</span></span><br><span class="line">x_train = x_train.astype(<span class="string">'float32'</span>)</span><br><span class="line">x_test = x_test.astype(<span class="string">'float32'</span>)</span><br><span class="line"><span class="comment">#归一到(0,1)区间内</span></span><br><span class="line">x_train /= <span class="number">255</span></span><br><span class="line">x_test /= <span class="number">255</span></span><br><span class="line">print(x_train.shape[<span class="number">0</span>], <span class="string">'train samples'</span>)</span><br><span class="line">print(x_test.shape[<span class="number">0</span>], <span class="string">'test samples'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># convert class vectors to binary class matrices</span></span><br><span class="line">y_train = keras.utils.to_categorical(y_train, num_classes)</span><br><span class="line">y_test = keras.utils.to_categorical(y_test, num_classes)</span><br><span class="line"></span><br><span class="line"><span class="comment">#使用了两个隐层，每个隐层512个单元，激活函数选用relu，添加了Dropout防止过拟合，最后通过softmax输出</span></span><br><span class="line">model = Sequential()</span><br><span class="line">model.add(Dense(<span class="number">512</span>, activation=<span class="string">'relu'</span>, input_shape=(<span class="number">784</span>,)))</span><br><span class="line">model.add(Dropout(<span class="number">0.2</span>))</span><br><span class="line">model.add(Dense(<span class="number">512</span>, activation=<span class="string">'relu'</span>))</span><br><span class="line">model.add(Dropout(<span class="number">0.2</span>))</span><br><span class="line">model.add(Dense(num_classes, activation=<span class="string">'softmax'</span>))</span><br><span class="line"></span><br><span class="line">model.summary()</span><br><span class="line"></span><br><span class="line"><span class="comment">#损失函数选用多分类对数损失函数，优化器选用RMSprop</span></span><br><span class="line">model.compile(loss=<span class="string">'categorical_crossentropy'</span>,</span><br><span class="line">              optimizer=RMSprop(),</span><br><span class="line">              metrics=[<span class="string">'accuracy'</span>])</span><br><span class="line"></span><br><span class="line">history = model.fit(x_train, y_train,</span><br><span class="line">                    batch_size=batch_size,</span><br><span class="line">                    epochs=epochs,</span><br><span class="line">                    verbose=<span class="number">1</span>,</span><br><span class="line">                    validation_data=(x_test, y_test))</span><br><span class="line">score = model.evaluate(x_test, y_test, verbose=<span class="number">0</span>)</span><br><span class="line">print(<span class="string">'Test loss:'</span>, score[<span class="number">0</span>])</span><br><span class="line">print(<span class="string">'Test accuracy:'</span>, score[<span class="number">1</span>])</span><br></pre></td></tr></table></figure>
+<p>结果：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">59392/60000 [============================&gt;.] - ETA: 0s - loss: 0.0183 - acc: 0.99</span><br><span class="line">59776/60000 [============================&gt;.] - ETA: 0s - loss: 0.0182 - acc: 0.99</span><br><span class="line"><span class="number">60000</span>/<span class="number">60000</span> [==============================] - <span class="number">15</span>s <span class="number">253</span>us/step - loss: <span class="number">0.0182</span> - acc: <span class="number">0.9953</span> - val_loss: <span class="number">0.1072</span> - val_acc: <span class="number">0.9842</span></span><br><span class="line">Test loss: <span class="number">0.10721807914278024</span></span><br><span class="line">Test accuracy: <span class="number">0.9842</span></span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Keras/" rel="tag"># Keras</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/08/WAV文件读取/" rel="next" title="WAV文件读取">
+                <i class="fa fa-chevron-left"></i> WAV文件读取
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Zilly Rex</p>
+              <p class="site-description motion-element" itemprop="description">..-. --- .-. -- -.-- .-.. --- ...- .</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">tags</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/ZillyRex" target="_blank" title="Github"><i class="fa fa-fw fa-globe"></i>Github</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.zhihu.com/people/zillyrex" target="_blank" title="Zhihu"><i class="fa fa-fw fa-globe"></i>Zhihu</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#基于Ubuntu安装Keras"><span class="nav-number">1.</span> <span class="nav-text">基于Ubuntu安装Keras</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Keras基础知识"><span class="nav-number">2.</span> <span class="nav-text">Keras基础知识</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Sequential-models"><span class="nav-number">2.1.</span> <span class="nav-text">Sequential models</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dense-layer"><span class="nav-number">2.2.</span> <span class="nav-text">Dense layer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#compile-amp-fit"><span class="nav-number">2.3.</span> <span class="nav-text">compile &amp; fit</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#训练一个线性回归模型"><span class="nav-number">3.</span> <span class="nav-text">训练一个线性回归模型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#训练一个用于识别MNIST的MLP"><span class="nav-number">4.</span> <span class="nav-text">训练一个用于识别MNIST的MLP</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zilly Rex</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Muse</a> v6.3.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.3.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.3.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.3.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.3.0"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

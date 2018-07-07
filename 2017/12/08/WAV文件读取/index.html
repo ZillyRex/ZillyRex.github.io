@@ -108,19 +108,19 @@
 
 
 
-  <meta name="description" content="WAV是一种以RIFF为基础的无压缩音频编码格式，该格式以Header、Format Chunk及Data Chunk三部分构成。 本文简要解析了各部分的构成要素，概述了如何使用C++对文件头进行解析以及提取音频数据。  上图展示了WAV文件格式，包括每一field的大小与端序">
+  <meta name="description" content="WAV是一种以RIFF为基础的无压缩音频编码格式，该格式以Header、Format Chunk及Data Chunk三部分构成。 本文简要解析了各部分的构成要素，概述了如何使用C++对文件头进行解析以及提取音频数据。">
 <meta name="keywords" content="audio">
 <meta property="og:type" content="article">
 <meta property="og:title" content="WAV文件读取">
 <meta property="og:url" content="https://zillyrex.github.io/2017/12/08/WAV文件读取/index.html">
 <meta property="og:site_name" content="MOTTO">
-<meta property="og:description" content="WAV是一种以RIFF为基础的无压缩音频编码格式，该格式以Header、Format Chunk及Data Chunk三部分构成。 本文简要解析了各部分的构成要素，概述了如何使用C++对文件头进行解析以及提取音频数据。  上图展示了WAV文件格式，包括每一field的大小与端序">
+<meta property="og:description" content="WAV是一种以RIFF为基础的无压缩音频编码格式，该格式以Header、Format Chunk及Data Chunk三部分构成。 本文简要解析了各部分的构成要素，概述了如何使用C++对文件头进行解析以及提取音频数据。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://soundfile.sapp.org/doc/WaveFormat/wav-sound-format.gif">
-<meta property="og:updated_time" content="2017-12-08T15:39:37.375Z">
+<meta property="og:updated_time" content="2018-07-06T15:49:11.429Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="WAV文件读取">
-<meta name="twitter:description" content="WAV是一种以RIFF为基础的无压缩音频编码格式，该格式以Header、Format Chunk及Data Chunk三部分构成。 本文简要解析了各部分的构成要素，概述了如何使用C++对文件头进行解析以及提取音频数据。  上图展示了WAV文件格式，包括每一field的大小与端序">
+<meta name="twitter:description" content="WAV是一种以RIFF为基础的无压缩音频编码格式，该格式以Header、Format Chunk及Data Chunk三部分构成。 本文简要解析了各部分的构成要素，概述了如何使用C++对文件头进行解析以及提取音频数据。">
 <meta name="twitter:image" content="http://soundfile.sapp.org/doc/WaveFormat/wav-sound-format.gif">
 
 
@@ -329,12 +329,24 @@
                 
               
 
-              <time title="Created: 2017-12-08 23:04:49 / Modified: 23:39:37" itemprop="dateCreated datePublished" datetime="2017-12-08T23:04:49+08:00">2017-12-08</time>
+              <time title="Created: 2017-12-08 23:04:49" itemprop="dateCreated datePublished" datetime="2017-12-08T23:04:49+08:00">2017-12-08</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2018-07-06 23:49:11" itemprop="dateModified" datetime="2018-07-06T23:49:11+08:00">2018-07-06</time>
               
             
           </span>
@@ -370,7 +382,8 @@
         <p>WAV是一种以RIFF为基础的无压缩音频编码格式，该格式以Header、Format Chunk及Data Chunk三部分构成。</p>
 <p>本文简要解析了各部分的构成要素，概述了如何使用C++对文件头进行解析以及提取音频数据。</p>
 <p><img src="http://soundfile.sapp.org/doc/WaveFormat/wav-sound-format.gif" alt=""></p>
-<p>上图展示了WAV文件格式，包括每一field的大小与端序<br><a id="more"></a></p>
+<a id="more"></a>
+<p>上图展示了WAV文件格式，包括每一field的大小与端序</p>
 <h2 id="Header"><a href="#Header" class="headerlink" title="Header"></a>Header</h2><ul>
 <li>ChunkID： 4字节大端序。文件从此处开始，对于WAV或AVI文件，其值总为“RIFF”。</li>
 <li>ChunkSize： 4字节小端序。表示文件总字节数减8，减去的8字节表示ChunkID与ChunkSize本身所占字节数。</li>
@@ -436,6 +449,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/07/06/基于Keras搭建MLP/" rel="prev" title="Keras(1):从零搭建MLP">
+                Keras(1):从零搭建MLP <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -509,7 +526,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-count">4</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -530,7 +547,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">3</span>
+                      
+                    
+                    <span class="site-state-item-count">4</span>
                     <span class="site-state-item-name">tags</span>
                   
                 </div>
