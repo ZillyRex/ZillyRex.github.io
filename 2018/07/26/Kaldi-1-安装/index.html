@@ -108,23 +108,26 @@
 
 
 
-  <meta name="description" content="..-. --- .-. -- -.-- .-.. --- ...- .">
-<meta property="og:type" content="website">
-<meta property="og:title" content="MOTTO">
-<meta property="og:url" content="https://zillyrex.github.io/tags/EM-K-means-GMM/index.html">
+  <meta name="description" content="Kaldi是基于C++开发并遵守Apache License v2.0的一款语音识别工具包，是目前最流行的ASR工具之一，本文基于Ubuntu 18.04 LTS介绍了如何安装Kaldi。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kaldi(1): 安装">
+<meta property="og:url" content="https://zillyrex.github.io/2018/07/26/Kaldi-1-安装/index.html">
 <meta property="og:site_name" content="MOTTO">
-<meta property="og:description" content="..-. --- .-. -- -.-- .-.. --- ...- .">
+<meta property="og:description" content="Kaldi是基于C++开发并遵守Apache License v2.0的一款语音识别工具包，是目前最流行的ASR工具之一，本文基于Ubuntu 18.04 LTS介绍了如何安装Kaldi。">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://kaldi-asr.org/kaldi_text_and_logo.png">
+<meta property="og:updated_time" content="2018-07-26T13:36:43.057Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="MOTTO">
-<meta name="twitter:description" content="..-. --- .-. -- -.-- .-.. --- ...- .">
+<meta name="twitter:title" content="Kaldi(1): 安装">
+<meta name="twitter:description" content="Kaldi是基于C++开发并遵守Apache License v2.0的一款语音识别工具包，是目前最流行的ASR工具之一，本文基于Ubuntu 18.04 LTS介绍了如何安装Kaldi。">
+<meta name="twitter:image" content="http://kaldi-asr.org/kaldi_text_and_logo.png">
 
 
 
 
 
 
-  <link rel="canonical" href="https://zillyrex.github.io/tags/EM-K-means-GMM/"/>
+  <link rel="canonical" href="https://zillyrex.github.io/2018/07/26/Kaldi-1-安装/"/>
 
 
 
@@ -134,7 +137,7 @@
   };
 </script>
 
-  <title>Tag: EM, K-means, GMM | MOTTO</title>
+  <title>Kaldi(1): 安装 | MOTTO</title>
   
 
 
@@ -181,7 +184,7 @@
     
   
 
-  <div class="container sidebar-position-left ">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -243,19 +246,6 @@
   
     
 
-    
-    
-      
-      
-    
-      
-      
-    
-    
-
-  
-
-
   
 
   
@@ -280,58 +270,178 @@
           <div id="content" class="content">
             
 
-  
-  
-  
-  <div class="post-block tag">
+  <div id="posts" class="posts-expand">
+    
 
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h1>EM, K-means, GMM<small>Tag</small>
-        </h1>
-      </div>
+  
 
-      
-        
+  
+  
+  
+
+  
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://zillyrex.github.io/2018/07/26/Kaldi-1-安装/">
 
-      <h2 class="post-title">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zilly Rex">
+      <meta itemprop="description" content="..-. --- .-. -- -.-- .-.. --- ...- .">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MOTTO">
+    </span>
+
+    
+      <header class="post-header">
+
         
-            <a class="post-title-link" href="/2018/07/26/EM算法-从K-means到GMM/" itemprop="url">
-              
-                <span itemprop="name">EM算法: 从K-means到GMM</span>
-              
-            </a>
         
-      </h2>
+          <h1 class="post-title" itemprop="name headline">Kaldi(1): 安装
+              
+            
+          </h1>
+        
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-07-26T20:05:50+08:00"
-              content="2018-07-26" >
-          07-26
-        </time>
-      </div>
+        <div class="post-meta">
+          <span class="post-time">
 
-    </header>
-  </article>
+            
+            
+            
 
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-07-26 21:25:36 / Modified: 21:36:43" itemprop="dateCreated datePublished" datetime="2018-07-26T21:25:36+08:00">2018-07-26</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Kaldi是基于C++开发并遵守Apache License v2.0的一款语音识别工具包，是目前最流行的ASR工具之一，本文基于Ubuntu 18.04 LTS介绍了如何安装Kaldi。</p>
+<p><img src="http://kaldi-asr.org/kaldi_text_and_logo.png" alt=""></p>
+<a id="more"></a>
+<p>git clone <a href="https://github.com/kaldi-asr/kaldi.git" target="_blank" rel="noopener">https://github.com/kaldi-asr/kaldi.git</a> kaldi-trunk –origin golden</p>
+<p>check_dependencies</p>
+<p>tools make</p>
+<p>irstlm</p>
+<p>configure</p>
+<p>仔细读</p>
+<p>make depend</p>
+<p>make</p>
+<p>egs/yesno/s5/run.sh</p>
 
       
     </div>
 
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/07/26/EM算法-从K-means到GMM/" rel="next" title="EM算法: 从K-means到GMM">
+                <i class="fa fa-chevron-left"></i> EM算法: 从K-means到GMM
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
           
+
+  
+
+
 
         </div>
         
@@ -560,6 +670,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.3.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.3.0"></script>
+
+
 
   
 
